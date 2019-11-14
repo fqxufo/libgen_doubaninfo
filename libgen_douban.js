@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         libgen上传信息自动填写
+// @name         libgen douban info
 // @namespace    http://tampermonkey.net/
-// @version      0.1.0
+// @version      0.1.3
 // @description  libgen上传页面豆瓣信息自动填充
 // @author       xiangzi fang
 // @include      http://librarian.libgen.lc/librarian/form.php
@@ -29,6 +29,7 @@
     let url = encodeURI(link.val())
 
     //自动选中中文语言选项
+    $("input[name='Language']").val('Chinese')
     $("select[name='langselect']").val('Chinese')
 
 
@@ -45,7 +46,7 @@
                 //封面图片url
                 let coverImg_url  = wrapper.get(0).querySelector("#mainpic > a > img").src
                 console.log('封面图片url: ',coverImg_url)
-                $("input[name='Coverurl']").val(coverImg_url)
+                // $("input[name='Coverurl']").val(coverImg_url)
 
 
                 let info = wrapper.get(0).querySelector("#info")
@@ -76,6 +77,7 @@
 
 
                     console.log('作者加译者:',authors_all_str)
+                    authors_all_str = authors_all_str.replace(/\s+/g,"").replace(/\r\n/g,"")
                     $("#1").val(authors_all_str)
                 } catch (err) {
                 }
