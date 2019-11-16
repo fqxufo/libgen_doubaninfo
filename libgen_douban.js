@@ -1,10 +1,15 @@
 // ==UserScript==
 // @name         libgen douban info
 // @namespace    http://tampermonkey.net/
-// @version      0.1.4
+// @version      0.1.5
 // @description  libgen上传页面豆瓣信息自动填充
 // @author       xiangzi fang
 // @include      http://librarian.libgen.lc/librarian/form.php
+// @include      http://librarian.bksrc.net/librarian/form.php
+// @include      https://libgen.is/librarian/form.php
+// @include      http://librarian.libgen.lc/librarian/registration.php*
+// @include      https://libgen.is/librarian/registration.php*
+// @include      http://librarian.bksrc.net/librarian/registration.php*
 // @grant        GM_xmlhttpRequest
 // @connect      book.douban.com
 // @require      http://code.jquery.com/jquery-3.4.1.min.js
@@ -19,7 +24,13 @@
 <span style="color: #298a31;">抓取豆瓣信息</span><input type="button" value="豆瓣" id="douban_button">
 <input type="text" name="" id="douban_url" placeholder="https://book.douban.com/subject/27079479/">
 </div>`
+
+    if (window.location.href.includes('registration')) {
+        console.log('修改页面中')
+        $('body > form:nth-child(13) > table').after(div_add)
+    } else {
     $('body > form:nth-child(11) > table').after(div_add)
+    }
     let link = $('#douban_url')
 
     let doubanBtn = $('#douban_button')
