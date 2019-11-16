@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         libgen douban info
 // @namespace    http://tampermonkey.net/
-// @version      0.1.3
+// @version      0.1.4
 // @description  libgen上传页面豆瓣信息自动填充
 // @author       xiangzi fang
 // @include      http://librarian.libgen.lc/librarian/form.php
 // @grant        GM_xmlhttpRequest
 // @connect      book.douban.com
 // @require      http://code.jquery.com/jquery-3.4.1.min.js
+// @home-url     https://github.com/fqxufo/libgen_doubaninfo
 // ==/UserScript==
 
 (function() {
@@ -66,10 +67,17 @@
                     let authors = info_val_list[data_list[0]]
                     let translators = info_val_list[data_list[1]]
 
-                    let authors_str = Array.from(authors.parentNode.querySelectorAll("a")).map(function (currentValue) { return currentValue.innerText }).join(",")
+                    let authors_str = ''
+                    if (authors.parentNode.id == 'info') {
+                        authors_str = authors.nextElementSibling.innerText
+                    } else {
+                        authors_str = Array.from(authors.parentNode.querySelectorAll("a")).map(function (currentValue) {return currentValue.innerText }).join(",")
+                    }
+                    console.log('作者',authors_str)
                     let authors_all_str = authors_str
                     if (translators) {
-                        let translators_str = Array.from(translators.parentNode.querySelectorAll("a")).map(function (currentValue) { return currentValue.innerText }).join(",")
+                        let translators_str = Array.from(translators.parentNode.querySelectorAll("a")).map(function (currentValue) {return currentValue.innerText }).join(",")
+                        console.log('译者',translators_str)
                         authors_all_str = authors_all_str + ',' + translators_str
                     }
 
@@ -77,7 +85,7 @@
 
 
                     console.log('作者加译者:',authors_all_str)
-                    authors_all_str = authors_all_str.replace(/\s+/g,"").replace(/\r\n/g,"")
+                    authors_all_str = authors_all_str.replace(/\s+/g,"").replace(/\r\n/g,"").replace(/\[.*?\]/g,'')
                     $("#1").val(authors_all_str)
                 } catch (err) {
                 }
@@ -112,7 +120,7 @@
                     }
 
                     if (originalTitle) {
-                        let originalTitle_str = originalTitle.nextSibling.nodeValue.replace(/\n| /g, "")
+                        let originalTitle_str = originalTitle.nextSibling.nodeValue.replace(/(^\s*)|(\s*$)/g,"")
                         console.log('原作名:',originalTitle_str)
                         title_all_str = title_all_str + ' ' +originalTitle_str
                     }
@@ -171,7 +179,7 @@
 
                 try {
                     let tags = wrapper.get(0).querySelectorAll("a.tag")
-                    let tags_str = Array.from(tags).map(function (currentValue) { return currentValue.innerText }).join(",").replace('我想读这本书','')
+                    let tags_str = Array.from(tags).map(function (currentValue) { return currentValue.innerText }).join(";").replace('我想读这本书','')
                     console.log('TAGS:',tags_str)
                     $("input[name='Tags']").val(tags_str)
                 } catch (err) { }
