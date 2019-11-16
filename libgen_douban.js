@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         libgen douban info
 // @namespace    http://tampermonkey.net/
-// @version      0.1.5
+// @version      0.1.6
 // @description  libgen上传页面豆瓣信息自动填充
 // @author       xiangzi fang
 // @include      http://librarian.libgen.lc/librarian/form.php
@@ -87,7 +87,12 @@
                     console.log('作者',authors_str)
                     let authors_all_str = authors_str
                     if (translators) {
-                        let translators_str = Array.from(translators.parentNode.querySelectorAll("a")).map(function (currentValue) {return currentValue.innerText }).join(",")
+                        let translators_str = ""
+                        if (translators.parentNode.id == 'info') {
+                        translators_str = translators.nextElementSibling.innerText
+                    } else {
+                        translators_str = Array.from(translators.parentNode.querySelectorAll("a")).map(function (currentValue) {return currentValue.innerText }).join(",")
+                    }
                         console.log('译者',translators_str)
                         authors_all_str = authors_all_str + ',' + translators_str
                     }
